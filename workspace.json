@@ -1,8 +1,233 @@
 {
   "version": 1,
-  "projects": {},
+  "projects": {
+    "libs": {
+      "root": "libs",
+      "sourceRoot": "libs",
+      "projectType": "library",
+      "prefix": "example",
+      "architect": {
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "testing/test.libs.ts",
+            "tsConfig": "testing/tsconfig.libs.spec.json",
+            "karmaConfig": "testing/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "testing/tsconfig.libs.json",
+              "testing/tsconfig.libs.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "xplat": {
+      "root": "xplat",
+      "sourceRoot": "xplat",
+      "projectType": "library",
+      "prefix": "example",
+      "architect": {
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "testing/test.xplat.ts",
+            "tsConfig": "testing/tsconfig.xplat.spec.json",
+            "karmaConfig": "testing/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "testing/tsconfig.xplat.json",
+              "testing/tsconfig.xplat.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "ionic-app": {
+      "root": "apps/ionic-app/",
+      "sourceRoot": "apps/ionic-app/src",
+      "projectType": "application",
+      "prefix": "example",
+      "schematics": {
+        "@schematics/angular:component": {
+          "styleext": "scss"
+        }
+      },
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "apps/ionic-app/www",
+            "index": "apps/ionic-app/src/index.html",
+            "main": "apps/ionic-app/src/main.ts",
+            "polyfills": "apps/ionic-app/src/polyfills.ts",
+            "tsConfig": "apps/ionic-app/tsconfig.app.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "apps/ionic-app/src/assets",
+                "output": "assets"
+              },
+              {
+                "glob": "**/*.svg",
+                "input": "node_modules/ionicons/dist/ionicons/svg",
+                "output": "./svg"
+              }
+            ],
+            "styles": [
+              {
+                "input": "apps/ionic-app/src/theme/variables.scss"
+              },
+              {
+                "input": "apps/ionic-app/src/global.scss"
+              }
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/ionic-app/src/environments/environment.ts",
+                  "with": "apps/ionic-app/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            },
+            "ci": {
+              "progress": false
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "ionic-app:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "ionic-app:build:production"
+            },
+            "ci": {
+              "progress": false
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "ionic-app:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "apps/ionic-app/src/test.ts",
+            "polyfills": "apps/ionic-app/src/polyfills.ts",
+            "tsConfig": "apps/ionic-app/tsconfig.spec.json",
+            "karmaConfig": "apps/ionic-app/karma.conf.js",
+            "styles": [],
+            "scripts": [],
+            "assets": [
+              {
+                "glob": "favicon.ico",
+                "input": "apps/ionic-app/src/",
+                "output": "/"
+              },
+              {
+                "glob": "**/*",
+                "input": "apps/ionic-app/src/assets",
+                "output": "/assets"
+              }
+            ]
+          },
+          "configurations": {
+            "ci": {
+              "progress": false,
+              "watch": false
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/ionic-app/tsconfig.app.json",
+              "apps/ionic-app/tsconfig.spec.json",
+              "apps/ionic-app/e2e/tsconfig.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "apps/ionic-app/e2e/protractor.conf.js",
+            "devServerTarget": "ionic-app:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "ionic-app:serve:production"
+            },
+            "ci": {
+              "devServerTarget": "ionic-app:serve:ci"
+            }
+          }
+        },
+        "ionic-cordova-build": {
+          "builder": "@ionic/angular-toolkit:cordova-build",
+          "options": {
+            "browserTarget": "ionic-app:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "ionic-app:build:production"
+            }
+          }
+        },
+        "ionic-cordova-serve": {
+          "builder": "@ionic/angular-toolkit:cordova-serve",
+          "options": {
+            "cordovaBuildTarget": "ionic-app:ionic-cordova-build",
+            "devServerTarget": "ionic-app:serve"
+          },
+          "configurations": {
+            "production": {
+              "cordovaBuildTarget": "ionic-app:ionic-cordova-build:production",
+              "devServerTarget": "ionic-app:serve:production"
+            }
+          }
+        }
+      }
+    }
+  },
   "cli": {
-    "defaultCollection": "@nrwl/workspace"
+    "defaultCollection": "@nstudio/xplat"
   },
   "schematics": {
     "@nrwl/workspace": {

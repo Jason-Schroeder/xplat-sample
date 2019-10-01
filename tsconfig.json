@@ -15,7 +15,13 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@example/*": ["libs/*"],
+      "@example/ionic": ["xplat/ionic/index.ts"],
+      "@example/ionic/*": ["xplat/ionic/*"],
+      "@example/web": ["xplat/web/index.ts"],
+      "@example/web/*": ["xplat/web/*"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
